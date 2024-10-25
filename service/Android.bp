@@ -11,8 +11,7 @@ cc_defaults {
     name: "libv4l2_codec2_service",
 
     defaults: [
-        "hidl_defaults",
-        "libcodec2-hidl-defaults",
+        "libcodec2-aidl-defaults",
     ],
     vendor: true,
     relative_install_path: "hw",
@@ -27,7 +26,6 @@ cc_defaults {
         "libavservices_minijail",
         "libchrome",
         "libcutils",
-        "libhidlbase",
         "liblog",
         "libutils",
     ],
@@ -36,7 +34,7 @@ cc_defaults {
 }
 
 cc_binary {
-    name: "android.hardware.media.c2@1.2-service-v4l2",
+    name: "android.hardware.media.c2-service-v4l2",
 
     defaults: [
         "libv4l2_codec2_service",
@@ -54,12 +52,12 @@ cc_binary {
     multilib: {
         lib32: {
             suffix: "-32",
-            init_rc: ["android.hardware.media.c2@1.2-service-v4l2-32.rc"],
+            init_rc: ["android.hardware.media.c2-service-v4l2-32.rc"],
         },
         lib64: {
             suffix: "-64",
-            init_rc: ["android.hardware.media.c2@1.2-service-v4l2-64.rc"],
+            init_rc: ["android.hardware.media.c2-service-v4l2-64.rc"],
         },
     },
-    vintf_fragments: ["android.hardware.media.c2@1.2-service-v4l2.xml"],
+    vintf_fragments: ["android.hardware.media.c2-service-v4l2.xml"],
 }

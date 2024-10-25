@@ -10,9 +10,10 @@
 #endif
 
 #include <C2Component.h>
+#include <android/binder_manager.h>
+#include <android/binder_process.h>
 #include <base/logging.h>
-#include <codec2/hidl/1.2/ComponentStore.h>
-#include <hidl/HidlTransportSupport.h>
+#include <codec2/aidl/ComponentStore.h>
 #include <log/log.h>
 #include <minijail.h>
 
@@ -38,9 +39,8 @@ int main(int /* argc */, char** /* argv */) {
     signal(SIGPIPE, SIG_IGN);
     android::SetUpMinijail(kBaseSeccompPolicyPath, kExtSeccompPolicyPath);
 
-    // Extra threads may be needed to handle a stacked IPC sequence that
-    // contains alternating binder and hwbinder calls. (See b/35283480.)
-    android::hardware::configureRpcThreadpool(16, true /* callerWillJoin */);
+    ABinderProcess_setThreadPoolMaxThreadCount(16);
+    ABinderProcess_startThreadPool();
 
 #if LOG_NDEBUG == 0
     ALOGD("Enable all verbose logging of libchrome");
@@ -49,24 +49,34 @@ int main(int /* argc */, char** /* argv */) {
 
     // Create IComponentStore service.
     {
-        using namespace ::android::hardware::media::c2::V1_2;
-        android::sp<IComponentStore> store = nullptr;
+        using namespace ::aidl::android::hardware::media::c2;
+        std::shared_ptr<IComponentStore> store;
 
 #ifdef V4L2_CODEC2_SERVICE_V4L2_STORE
         ALOGD("Instantiating Codec2's V4L2 IComponentStore service...");
-        store = new utils::ComponentStore(android::V4L2ComponentStore::Create());
+        store = ::ndk::SharedRefBase::make<utils::ComponentStore>(
+                android::V4L2ComponentStore::Create());
 #endif
 
         if (store == nullptr) {
             ALOGE("Cannot create Codec2's IComponentStore service.");
-        } else if (store->registerAsService("default") != android::OK) {
-            ALOGE("Cannot register Codec2's IComponentStore service.");
         } else {
-            ALOGI("Codec2's IComponentStore service created.");
+            const std::string serviceName = std::string(IComponentStore::descriptor) + "/default";
+            binder_exception_t ex =
+                    AServiceManager_addService(store->asBinder().get(), serviceName.c_str());
+            if (ex != EX_NONE) {
+                ALOGE("Cannot register Codec2's IComponentStore service"
+                      " with instance name \"%s\"",
+                      serviceName.c_str());
+            } else {
+                ALOGD("Codec2's IComponentStore service registered. "
+                      "Instance name: \"%s\"",
+                      serviceName.c_str());
+            }
         }
     }
 
-    android::hardware::joinRpcThreadpool();
+    ABinderProcess_joinThreadPool();
     ALOGD("Service shutdown.");
     return 0;
 }
