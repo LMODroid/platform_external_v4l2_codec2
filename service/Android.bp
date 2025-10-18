@@ -48,16 +48,6 @@ cc_binary {
         "-DV4L2_CODEC2_SERVICE_V4L2_STORE",
     ],
 
-    compile_multilib: "both",
-    multilib: {
-        lib32: {
-            suffix: "-32",
-            init_rc: ["android.hardware.media.c2-service-v4l2-32.rc"],
-        },
-        lib64: {
-            suffix: "-64",
-            init_rc: ["android.hardware.media.c2-service-v4l2-64.rc"],
-        },
-    },
+    init_rc: ["android.hardware.media.c2-service-v4l2.rc"],
     vintf_fragments: ["android.hardware.media.c2-service-v4l2.xml"],
 }
