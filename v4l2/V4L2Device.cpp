@@ -1348,26 +1348,16 @@ C2Config::level_t V4L2Device::v4L2LevelToC2Level(VideoCodec codec, uint32_t leve
             return C2Config::LEVEL_AVC_4_2;
         case V4L2_MPEG_VIDEO_H264_LEVEL_5_0:
             return C2Config::LEVEL_AVC_5;
-#ifdef V4L2_MPEG_VIDEO_H264_LEVEL_5_1
         case V4L2_MPEG_VIDEO_H264_LEVEL_5_1:
             return C2Config::LEVEL_AVC_5_1;
-#endif
-#ifdef V4L2_MPEG_VIDEO_H264_LEVEL_5_2
         case V4L2_MPEG_VIDEO_H264_LEVEL_5_2:
             return C2Config::LEVEL_AVC_5_2;
-#endif
-#ifdef V4L2_MPEG_VIDEO_H264_LEVEL_6_0
         case V4L2_MPEG_VIDEO_H264_LEVEL_6_0:
             return C2Config::LEVEL_AVC_6;
-#endif
-#ifdef V4L2_MPEG_VIDEO_H264_LEVEL_6_1
         case V4L2_MPEG_VIDEO_H264_LEVEL_6_1:
             return C2Config::LEVEL_AVC_6_1;
-#endif
-#ifdef V4L2_MPEG_VIDEO_H264_LEVEL_6_2
         case V4L2_MPEG_VIDEO_H264_LEVEL_6_2:
             return C2Config::LEVEL_AVC_6_2;
-#endif
         }
         break;
     case VideoCodec::VP8:
@@ -1375,7 +1365,6 @@ C2Config::level_t V4L2Device::v4L2LevelToC2Level(VideoCodec codec, uint32_t leve
         break;
     case VideoCodec::VP9:
         switch (level) {
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_1_0
         case V4L2_MPEG_VIDEO_VP9_LEVEL_1_0:
             return C2Config::LEVEL_VP9_1;
         case V4L2_MPEG_VIDEO_VP9_LEVEL_1_1:
@@ -1392,31 +1381,18 @@ C2Config::level_t V4L2Device::v4L2LevelToC2Level(VideoCodec codec, uint32_t leve
             return C2Config::LEVEL_VP9_4;
         case V4L2_MPEG_VIDEO_VP9_LEVEL_4_1:
             return C2Config::LEVEL_VP9_4_1;
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_5_0
         case V4L2_MPEG_VIDEO_VP9_LEVEL_5_0:
             return C2Config::LEVEL_VP9_5;
-#endif
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_5_1
         case V4L2_MPEG_VIDEO_VP9_LEVEL_5_1:
             return C2Config::LEVEL_VP9_5_1;
-#endif
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_5_2
         case V4L2_MPEG_VIDEO_VP9_LEVEL_5_2:
             return C2Config::LEVEL_VP9_5_2;
-#endif
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_6_0
         case V4L2_MPEG_VIDEO_VP9_LEVEL_6_0:
             return C2Config::LEVEL_VP9_6;
-#endif
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_6_1
         case V4L2_MPEG_VIDEO_VP9_LEVEL_6_1:
             return C2Config::LEVEL_VP9_6_1;
-#endif
-#ifdef V4L2_MPEG_VIDEO_VP9_LEVEL_6_2
         case V4L2_MPEG_VIDEO_VP9_LEVEL_6_2:
             return C2Config::LEVEL_VP9_6_2;
-#endif
-#endif
         default:
             return C2Config::LEVEL_UNUSED;
         }
@@ -1537,11 +1513,9 @@ std::vector<C2Config::level_t> V4L2Device::queryC2Levels(uint32_t pixFmt) {
         case VideoCodec::H264:
             queryId = V4L2_CID_MPEG_VIDEO_H264_LEVEL;
             break;
-#ifdef V4L2_CID_MPEG_VIDEO_VP9_LEVEL
         case VideoCodec::VP9:
             queryId = V4L2_CID_MPEG_VIDEO_VP9_LEVEL;
             break;
-#endif
         case VideoCodec::HEVC:
             queryId = V4L2_CID_MPEG_VIDEO_HEVC_LEVEL;
             break;
@@ -2242,11 +2216,9 @@ C2Config::level_t V4L2Device::getDefaultLevel(VideoCodec codec) {
     case VideoCodec::H264:
         queryId = V4L2_CID_MPEG_VIDEO_H264_LEVEL;
         break;
-#ifdef V4L2_CID_MPEG_VIDEO_VP9_LEVEL
     case VideoCodec::VP9:
         queryId = V4L2_CID_MPEG_VIDEO_VP9_LEVEL;
         break;
-#endif
     case VideoCodec::HEVC:
         queryId = V4L2_CID_MPEG_VIDEO_HEVC_LEVEL;
         break;
