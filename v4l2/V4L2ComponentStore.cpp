@@ -12,6 +12,8 @@
 #include <memory>
 #include <mutex>
 
+#include <cutils/properties.h>
+
 #include <C2.h>
 #include <C2Config.h>
 #include <log/log.h>
@@ -36,26 +38,41 @@ std::shared_ptr<C2ComponentStore> V4L2ComponentStore::Create() {
 
     auto builder = ComponentStore::Builder("android.componentStore.v4l2");
 
-    builder.encoder(V4L2ComponentName::kH264Encoder, VideoCodec::H264,
-                    &V4L2ComponentFactory::create);
-    builder.encoder(V4L2ComponentName::kVP8Encoder, VideoCodec::VP8, &V4L2ComponentFactory::create);
-    builder.encoder(V4L2ComponentName::kVP9Encoder, VideoCodec::VP9, &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.encoder.supported.h264", false))
+        builder.encoder(V4L2ComponentName::kH264Encoder, VideoCodec::H264,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.encoder.supported.vp8", false))
+        builder.encoder(V4L2ComponentName::kVP8Encoder, VideoCodec::VP8,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.encoder.supported.vp9", false))
+        builder.encoder(V4L2ComponentName::kVP9Encoder, VideoCodec::VP9,
+                        &V4L2ComponentFactory::create);
 
-    builder.decoder(V4L2ComponentName::kH264Decoder, VideoCodec::H264,
-                    &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kVP8Decoder, VideoCodec::VP8, &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kVP9Decoder, VideoCodec::VP9, &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kHEVCDecoder, VideoCodec::HEVC,
-                    &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.h264", false))
+        builder.decoder(V4L2ComponentName::kH264Decoder, VideoCodec::H264,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.vp8", false))
+        builder.decoder(V4L2ComponentName::kVP8Decoder, VideoCodec::VP8,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.vp9", false))
+        builder.decoder(V4L2ComponentName::kVP9Decoder, VideoCodec::VP9,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.hevc", false))
+        builder.decoder(V4L2ComponentName::kHEVCDecoder, VideoCodec::HEVC,
+                        &V4L2ComponentFactory::create);
 
-    builder.decoder(V4L2ComponentName::kH264SecureDecoder, VideoCodec::H264,
-                    &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kVP8SecureDecoder, VideoCodec::VP8,
-                    &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kVP9SecureDecoder, VideoCodec::VP9,
-                    &V4L2ComponentFactory::create);
-    builder.decoder(V4L2ComponentName::kHEVCSecureDecoder, VideoCodec::HEVC,
-                    &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.h264.secure", false))
+        builder.decoder(V4L2ComponentName::kH264SecureDecoder, VideoCodec::H264,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.vp8.secure", false))
+        builder.decoder(V4L2ComponentName::kVP8SecureDecoder, VideoCodec::VP8,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.vp9.secure", false))
+        builder.decoder(V4L2ComponentName::kVP9SecureDecoder, VideoCodec::VP9,
+                        &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.hevc.secure", false))
+        builder.decoder(V4L2ComponentName::kHEVCSecureDecoder, VideoCodec::HEVC,
+                        &V4L2ComponentFactory::create);
 
     store = std::shared_ptr<C2ComponentStore>(std::move(builder).build());
     platformStore = store;
