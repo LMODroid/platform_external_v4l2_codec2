@@ -1449,6 +1449,8 @@ C2Config::profile_t V4L2Device::v4L2ProfileToC2Profile(VideoCodec codec, uint32_
             return C2Config::PROFILE_AVC_EXTENDED;
         case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH:
             return C2Config::PROFILE_AVC_HIGH;
+        case V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_HIGH:
+            return C2Config::PROFILE_AVC_CONSTRAINED_HIGH;
         }
         break;
     case VideoCodec::VP8:
