@@ -296,6 +296,13 @@ bool V4L2Decoder::startOutputQueue(size_t minOutputBuffersCount, enum v4l2_memor
     }
     *numOutputBuffers = std::max(*numOutputBuffers, minOutputBuffersCount);
 
+    if (mOutputQueue->isStreaming()) {
+        mOutputQueue->streamoff();
+    }
+    if (mOutputQueue->allocatedBuffersCount() > 0) {
+        mOutputQueue->deallocateBuffers();
+    }
+
     const ui::Size codedSize(format->fmt.pix_mp.width, format->fmt.pix_mp.height);
     if (!setupOutputFormat(codedSize)) {
         return false;
@@ -313,13 +320,6 @@ bool V4L2Decoder::startOutputQueue(size_t minOutputBuffersCount, enum v4l2_memor
     if (isEmpty(mCodedSize)) {
         ALOGE("Failed to get resolution from V4L2 driver.");
         return false;
-    }
-
-    if (mOutputQueue->isStreaming()) {
-        mOutputQueue->streamoff();
-    }
-    if (mOutputQueue->allocatedBuffersCount() > 0) {
-        mOutputQueue->deallocateBuffers();
     }
 
     mFrameAtDevice.clear();
