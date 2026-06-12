@@ -661,6 +661,7 @@ void V4L2Decoder::serviceDeviceTask(bool event) {
 
         // Get the corresponding VideoFrame of the dequeued buffer.
         auto it = mFrameAtDevice.find(bufferId);
+        if (it == mFrameAtDevice.end() && isLast) continue;
         ALOG_ASSERT(it != mFrameAtDevice.end(), "buffer %zu is not found at mFrameAtDevice",
                     bufferId);
         auto frame = std::move(it->second);
