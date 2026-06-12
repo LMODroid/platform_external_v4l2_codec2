@@ -26,7 +26,7 @@ constexpr size_t k4KArea = 3840 * 2160;
 // when using higher bitrates, like 1Mb/s on slower devices. Also, this brings up compability
 // with the Chrome browser as it is using 2MB buffer size for a 1080p stream, ref:
 // https://source.chromium.org/chromium/chromium/src/+/main:media/gpu/gpu_video_encode_accelerator_helpers.cc;l=25
-constexpr size_t kInputBufferSizeFor1080p = 2 * 1024 * 1024;  // 2MB
+constexpr size_t kInputBufferSizeFor1080p = 16 * 1024 * 1024;  // 16MB
 // Input bitstream buffer size for up to 4k streams.
 constexpr size_t kInputBufferSizeFor4K = 4 * kInputBufferSizeFor1080p;
 
