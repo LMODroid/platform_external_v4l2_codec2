@@ -262,15 +262,9 @@ std::string Fourcc::toString() const {
 }
 
 static_assert(Fourcc::AR24 == V4L2_PIX_FMT_ABGR32, "Mismatch Fourcc");
-#ifdef V4L2_PIX_FMT_RGBA32
-// V4L2_PIX_FMT_RGBA32 is defined since v5.2
 static_assert(Fourcc::AB24 == V4L2_PIX_FMT_RGBA32, "Mismatch Fourcc");
-#endif  // V4L2_PIX_FMT_RGBA32
 static_assert(Fourcc::XR24 == V4L2_PIX_FMT_XBGR32, "Mismatch Fourcc");
-#ifdef V4L2_PIX_FMT_RGBX32
-// V4L2_PIX_FMT_RGBX32 is defined since v5.2
 static_assert(Fourcc::XB24 == V4L2_PIX_FMT_RGBX32, "Mismatch Fourcc");
-#endif  // V4L2_PIX_FMT_RGBX32
 static_assert(Fourcc::RGB4 == V4L2_PIX_FMT_RGB32, "Mismatch Fourcc");
 static_assert(Fourcc::BGR4 == V4L2_PIX_FMT_BGR32, "Mismatch Fourcc");
 static_assert(Fourcc::YU12 == V4L2_PIX_FMT_YUV420, "Mismatch Fourcc");
