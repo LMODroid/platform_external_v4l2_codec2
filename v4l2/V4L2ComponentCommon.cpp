@@ -20,6 +20,7 @@ const std::string V4L2ComponentName::kH264Decoder = "c2.v4l2.avc.decoder";
 const std::string V4L2ComponentName::kVP8Decoder = "c2.v4l2.vp8.decoder";
 const std::string V4L2ComponentName::kVP9Decoder = "c2.v4l2.vp9.decoder";
 const std::string V4L2ComponentName::kHEVCDecoder = "c2.v4l2.hevc.decoder";
+const std::string V4L2ComponentName::kAV1Decoder = "c2.v4l2.av1.decoder";
 const std::string V4L2ComponentName::kH264SecureDecoder = "c2.v4l2.avc.decoder.secure";
 const std::string V4L2ComponentName::kVP8SecureDecoder = "c2.v4l2.vp8.decoder.secure";
 const std::string V4L2ComponentName::kVP9SecureDecoder = "c2.v4l2.vp9.decoder.secure";
@@ -29,8 +30,8 @@ const std::string V4L2ComponentName::kHEVCSecureDecoder = "c2.v4l2.hevc.decoder.
 bool V4L2ComponentName::isValid(const std::string& name) {
     return name == kH264Encoder || name == kVP8Encoder || name == kVP9Encoder ||
            name == kH264Decoder || name == kVP8Decoder || name == kVP9Decoder ||
-           name == kHEVCDecoder || name == kH264SecureDecoder || name == kVP8SecureDecoder ||
-           name == kVP9SecureDecoder || name == kHEVCSecureDecoder;
+           name == kHEVCDecoder || name == kAV1Decoder || name == kH264SecureDecoder ||
+           name == kVP8SecureDecoder || name == kVP9SecureDecoder || name == kHEVCSecureDecoder;
 }
 
 // static
@@ -46,6 +47,7 @@ bool V4L2ComponentName::isDecoder(const std::string& name) {
     static const std::set<std::string> kValidDecoders = {
             kH264Decoder, kH264SecureDecoder, kVP8Decoder,  kVP8SecureDecoder,
             kVP9Decoder,  kVP9SecureDecoder,  kHEVCDecoder, kHEVCSecureDecoder,
+            kAV1Decoder,
     };
 
     return kValidDecoders.find(name) != kValidDecoders.end();
@@ -65,6 +67,8 @@ std::optional<VideoCodec> V4L2ComponentName::getCodec(const std::string& name) {
             {kVP9Encoder, VideoCodec::VP9},
 
             {kHEVCDecoder, VideoCodec::HEVC}, {kHEVCSecureDecoder, VideoCodec::HEVC},
+
+            {kAV1Decoder, VideoCodec::AV1},
     };
 
     auto iter = kNameToCodecs.find(name);

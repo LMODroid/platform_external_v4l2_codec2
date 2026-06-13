@@ -19,10 +19,12 @@ enum class VideoCodec {
     VP8,
     VP9,
     HEVC,
+    AV1,
 };
 
 constexpr std::initializer_list<VideoCodec> kAllCodecs = {VideoCodec::H264, VideoCodec::VP8,
-                                                          VideoCodec::VP9, VideoCodec::HEVC};
+                                                          VideoCodec::VP9, VideoCodec::HEVC,
+                                                          VideoCodec::AV1};
 
 const char* VideoCodecToString(VideoCodec codec);
 const char* profileToString(C2Config::profile_t profile);
