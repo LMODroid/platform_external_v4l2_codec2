@@ -155,6 +155,9 @@ DecodeInterface::DecodeInterface(const std::string& name,
         case VideoCodec::HEVC:
             profiles = {C2Config::PROFILE_HEVC_MAIN};
             break;
+        case VideoCodec::AV1:
+            profiles = {C2Config::PROFILE_AV1_0};
+            break;
         }
     }
 
@@ -195,6 +198,14 @@ DecodeInterface::DecodeInterface(const std::string& name,
                       C2Config::LEVEL_HEVC_MAIN_5_1, C2Config::LEVEL_HEVC_MAIN_5_2,
                       C2Config::LEVEL_HEVC_MAIN_6,   C2Config::LEVEL_HEVC_MAIN_6_1,
                       C2Config::LEVEL_HEVC_MAIN_6_2};
+            break;
+        case VideoCodec::AV1:
+            levels = {C2Config::LEVEL_AV1_2, C2Config::LEVEL_AV1_2_1, C2Config::LEVEL_AV1_2_2, C2Config::LEVEL_AV1_2_3,
+                      C2Config::LEVEL_AV1_3, C2Config::LEVEL_AV1_3_1, C2Config::LEVEL_AV1_3_2, C2Config::LEVEL_AV1_3_3,
+                      C2Config::LEVEL_AV1_4, C2Config::LEVEL_AV1_4_1, C2Config::LEVEL_AV1_4_2, C2Config::LEVEL_AV1_4_3,
+                      C2Config::LEVEL_AV1_5, C2Config::LEVEL_AV1_5_1, C2Config::LEVEL_AV1_5_2, C2Config::LEVEL_AV1_5_3,
+                      C2Config::LEVEL_AV1_6, C2Config::LEVEL_AV1_6_1, C2Config::LEVEL_AV1_6_2, C2Config::LEVEL_AV1_6_3,
+                      C2Config::LEVEL_AV1_7, C2Config::LEVEL_AV1_7_1, C2Config::LEVEL_AV1_7_2, C2Config::LEVEL_AV1_7_3};
             break;
         }
     }
@@ -238,6 +249,18 @@ DecodeInterface::DecodeInterface(const std::string& name,
 
     case VideoCodec::HEVC:
         inputMime = MEDIA_MIMETYPE_VIDEO_HEVC;
+        addParameter(DefineParam(mProfileLevel, C2_PARAMKEY_PROFILE_LEVEL)
+                             .withDefault(new C2StreamProfileLevelInfo::input(
+                                     0u, static_cast<C2Config::profile_t>(defaultProfile),
+                                     static_cast<C2Config::level_t>(defaultLevel)))
+                             .withFields({C2F(mProfileLevel, profile).oneOf(profiles),
+                                          C2F(mProfileLevel, level).oneOf(levels)})
+                             .withSetter(ProfileLevelSetter)
+                             .build());
+        break;
+
+    case VideoCodec::AV1:
+        inputMime = MEDIA_MIMETYPE_VIDEO_AV1;
         addParameter(DefineParam(mProfileLevel, C2_PARAMKEY_PROFILE_LEVEL)
                              .withDefault(new C2StreamProfileLevelInfo::input(
                                      0u, static_cast<C2Config::profile_t>(defaultProfile),
@@ -445,6 +468,9 @@ uint32_t DecodeInterface::getOutputDelay(VideoCodec codec) {
         return 3;
     case VideoCodec::VP9:
         // Reference: https://www.webmproject.org/vp9/levels/
+        return 8;
+    case VideoCodec::AV1:
+        // Reference: TOTAL_REFS_PER_FRAME at https://aomediacodec.github.io/av1-spec/#symbols-and-abbreviated-terms
         return 8;
     }
 }

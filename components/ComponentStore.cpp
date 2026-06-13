@@ -180,6 +180,9 @@ std::shared_ptr<const C2Component::Traits> ComponentStore::getTraits(const C2Str
     case VideoCodec::HEVC:
         traits->mediaType = MEDIA_MIMETYPE_VIDEO_HEVC;
         break;
+    case VideoCodec::AV1:
+        traits->mediaType = MEDIA_MIMETYPE_VIDEO_AV1;
+        break;
     }
 
     mCachedTraits.emplace(name, traits);

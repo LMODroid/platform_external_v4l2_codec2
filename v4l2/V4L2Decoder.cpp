@@ -56,6 +56,9 @@ bool waitForDRC(const C2ConstLinearBlock& input, std::optional<VideoCodec> codec
     case VideoCodec::VP8:
         // 0 - key frame; 1 - interframe;
         return ((pos[0] & kVP8FrameTypeMask) == 0);
+    case VideoCodec::AV1:
+        // This is not easily checked and is not breaking to ignore
+        break;
     }
 
     return false;

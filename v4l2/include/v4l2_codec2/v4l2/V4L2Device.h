@@ -47,6 +47,14 @@
 #define V4L2_PIX_FMT_HEVC_SLICE v4l2_fourcc('S', '2', '6', '5')
 #endif
 
+// AV1 parsed frames
+#ifndef V4L2_PIX_FMT_AV1_FRAME
+#define V4L2_PIX_FMT_AV1_FRAME v4l2_fourcc('A', 'V', '1', 'F')
+#endif
+#ifndef V4L2_PIX_FMT_AV1
+#define V4L2_PIX_FMT_AV1 v4l2_fourcc('A', 'V', '0', '1')
+#endif
+
 namespace android {
 
 class V4L2Queue;

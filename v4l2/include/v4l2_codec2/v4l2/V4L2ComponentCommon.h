@@ -21,6 +21,7 @@ struct V4L2ComponentName {
     static const std::string kVP8Decoder;
     static const std::string kVP9Decoder;
     static const std::string kHEVCDecoder;
+    static const std::string kAV1Decoder;
     static const std::string kH264SecureDecoder;
     static const std::string kVP8SecureDecoder;
     static const std::string kVP9SecureDecoder;

@@ -60,6 +60,9 @@ std::shared_ptr<C2ComponentStore> V4L2ComponentStore::Create() {
     if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.hevc", false))
         builder.decoder(V4L2ComponentName::kHEVCDecoder, VideoCodec::HEVC,
                         &V4L2ComponentFactory::create);
+    if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.av1", false))
+        builder.decoder(V4L2ComponentName::kAV1Decoder, VideoCodec::AV1,
+                        &V4L2ComponentFactory::create);
 
     if (property_get_bool("ro.vendor.v4l2_codec2.decoder.supported.h264.secure", false))
         builder.decoder(V4L2ComponentName::kH264SecureDecoder, VideoCodec::H264,

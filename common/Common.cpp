@@ -45,6 +45,8 @@ bool isValidProfileForCodec(VideoCodec codec, C2Config::profile_t profile) {
     case VideoCodec::HEVC:
         return ((profile >= C2Config::PROFILE_HEVC_MAIN) &&
                 (profile <= C2Config::PROFILE_HEVC_3D_MAIN));
+    case VideoCodec::AV1:
+        return ((profile >= C2Config::PROFILE_AV1_0) && (profile <= C2Config::PROFILE_AV1_2));
     default:
         return false;
     }

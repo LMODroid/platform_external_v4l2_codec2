@@ -58,6 +58,10 @@ bool isValidPixFmtForCodec(VideoCodec codec, uint32_t pixFmt) {
     case V4L2_PIX_FMT_HEVC_SLICE:
         return codec == VideoCodec::HEVC;
         break;
+    case V4L2_PIX_FMT_AV1:
+    case V4L2_PIX_FMT_AV1_FRAME:
+        return codec == VideoCodec::AV1;
+        break;
     default:
         ALOGE("Unhandled pixelformat %s", fourccToString(pixFmt).c_str());
         return false;
@@ -1307,6 +1311,12 @@ uint32_t V4L2Device::c2ProfileToV4L2PixFmt(C2Config::profile_t profile, bool sli
         } else {
             return V4L2_PIX_FMT_HEVC;
         }
+    } else if (profile >= C2Config::PROFILE_AV1_0 && profile <= C2Config::PROFILE_AV1_2) {
+        if (sliceBased) {
+            return V4L2_PIX_FMT_AV1_FRAME;
+        } else {
+            return V4L2_PIX_FMT_AV1;
+        }
     } else {
         ALOGE("Unknown profile: %s", profileToString(profile));
         return 0;
@@ -1427,6 +1437,58 @@ C2Config::level_t V4L2Device::v4L2LevelToC2Level(VideoCodec codec, uint32_t leve
             return C2Config::LEVEL_HEVC_MAIN_6_2;
         }
         break;
+    case VideoCodec::AV1:
+        switch (level) {
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_2_0:
+            return C2Config::LEVEL_AV1_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_2_1:
+            return C2Config::LEVEL_AV1_2_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_2_2:
+            return C2Config::LEVEL_AV1_2_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_2_3:
+            return C2Config::LEVEL_AV1_2_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_3_0:
+            return C2Config::LEVEL_AV1_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_3_1:
+            return C2Config::LEVEL_AV1_3_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_3_2:
+            return C2Config::LEVEL_AV1_3_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_3_3:
+            return C2Config::LEVEL_AV1_3_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_4_0:
+            return C2Config::LEVEL_AV1_4;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_4_1:
+            return C2Config::LEVEL_AV1_4_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_4_2:
+            return C2Config::LEVEL_AV1_4_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_4_3:
+            return C2Config::LEVEL_AV1_4_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_5_0:
+            return C2Config::LEVEL_AV1_5;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_5_1:
+            return C2Config::LEVEL_AV1_5_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_5_2:
+            return C2Config::LEVEL_AV1_5_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_5_3:
+            return C2Config::LEVEL_AV1_5_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_6_0:
+            return C2Config::LEVEL_AV1_6;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_6_1:
+            return C2Config::LEVEL_AV1_6_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_6_2:
+            return C2Config::LEVEL_AV1_6_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_6_3:
+            return C2Config::LEVEL_AV1_6_3;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_7_0:
+            return C2Config::LEVEL_AV1_7;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_7_1:
+            return C2Config::LEVEL_AV1_7_1;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_7_2:
+            return C2Config::LEVEL_AV1_7_2;
+        case V4L2_MPEG_VIDEO_AV1_LEVEL_7_3:
+            return C2Config::LEVEL_AV1_7_3;
+        }
+        break;
     default:
         ALOGE("Unknown codec: %u", codec);
     }
@@ -1487,6 +1549,16 @@ C2Config::profile_t V4L2Device::v4L2ProfileToC2Profile(VideoCodec codec, uint32_
             return C2Config::PROFILE_HEVC_MAIN_10;
         }
         break;
+    case VideoCodec::AV1:
+        switch (profile) {
+        case V4L2_MPEG_VIDEO_AV1_PROFILE_MAIN:
+            return C2Config::PROFILE_AV1_0;
+        case V4L2_MPEG_VIDEO_AV1_PROFILE_HIGH:
+            return C2Config::PROFILE_AV1_1;
+        case V4L2_MPEG_VIDEO_AV1_PROFILE_PROFESSIONAL:
+            return C2Config::PROFILE_AV1_2;
+        }
+        break;
     default:
         ALOGE("Unknown codec: %u", codec);
     }
@@ -1505,6 +1577,8 @@ uint32_t V4L2Device::videoCodecToPixFmt(VideoCodec codec) {
         return V4L2_PIX_FMT_VP9;
     case VideoCodec::HEVC:
         return V4L2_PIX_FMT_HEVC;
+    case VideoCodec::AV1:
+        return V4L2_PIX_FMT_AV1;
     }
 }
 
@@ -1520,6 +1594,9 @@ std::vector<C2Config::level_t> V4L2Device::queryC2Levels(uint32_t pixFmt) {
             break;
         case VideoCodec::HEVC:
             queryId = V4L2_CID_MPEG_VIDEO_HEVC_LEVEL;
+            break;
+        case VideoCodec::AV1:
+            queryId = V4L2_CID_MPEG_VIDEO_AV1_LEVEL;
             break;
         default:
             return false;
@@ -1587,6 +1664,18 @@ std::vector<C2Config::level_t> V4L2Device::queryC2Levels(uint32_t pixFmt) {
                       C2Config::LEVEL_HEVC_MAIN_6_2};
         }
         break;
+    case V4L2_PIX_FMT_AV1:
+    case V4L2_PIX_FMT_AV1_FRAME:
+        if (!getSupportedLevels(VideoCodec::AV1, &levels)) {
+            ALOGW("Driver doesn't support QUERY AV1 levels, use default values, 2-7");
+            levels = {C2Config::LEVEL_AV1_2, C2Config::LEVEL_AV1_2_1, C2Config::LEVEL_AV1_2_2, C2Config::LEVEL_AV1_2_3,
+                      C2Config::LEVEL_AV1_3, C2Config::LEVEL_AV1_3_1, C2Config::LEVEL_AV1_3_2, C2Config::LEVEL_AV1_3_3,
+                      C2Config::LEVEL_AV1_4, C2Config::LEVEL_AV1_4_1, C2Config::LEVEL_AV1_4_2, C2Config::LEVEL_AV1_4_3,
+                      C2Config::LEVEL_AV1_5, C2Config::LEVEL_AV1_5_1, C2Config::LEVEL_AV1_5_2, C2Config::LEVEL_AV1_5_3,
+                      C2Config::LEVEL_AV1_6, C2Config::LEVEL_AV1_6_1, C2Config::LEVEL_AV1_6_2, C2Config::LEVEL_AV1_6_3,
+                      C2Config::LEVEL_AV1_7, C2Config::LEVEL_AV1_7_1, C2Config::LEVEL_AV1_7_2, C2Config::LEVEL_AV1_7_3};
+        }
+        break;
     default:
         ALOGE("Unhandled pixelformat %s", fourccToString(pixFmt).c_str());
         return {};
@@ -1613,6 +1702,9 @@ std::vector<C2Config::profile_t> V4L2Device::queryC2Profiles(uint32_t pixFmt) {
             break;
         case VideoCodec::HEVC:
             queryId = V4L2_CID_MPEG_VIDEO_HEVC_PROFILE;
+            break;
+        case VideoCodec::AV1:
+            queryId = V4L2_CID_MPEG_VIDEO_AV1_PROFILE;
             break;
         default:
             return false;
@@ -1673,6 +1765,13 @@ std::vector<C2Config::profile_t> V4L2Device::queryC2Profiles(uint32_t pixFmt) {
             profiles = {
                     C2Config::PROFILE_HEVC_MAIN,
             };
+        }
+        break;
+    case V4L2_PIX_FMT_AV1:
+    case V4L2_PIX_FMT_AV1_FRAME:
+        if (!getSupportedProfiles(VideoCodec::AV1, &profiles)) {
+            ALOGW("Driver doesn't support QUERY AV1 profiles, use default values, Profile0");
+            profiles = {C2Config::PROFILE_AV1_0};
         }
         break;
     default:
@@ -2177,6 +2276,9 @@ C2Config::profile_t V4L2Device::getDefaultProfile(VideoCodec codec) {
     case VideoCodec::HEVC:
         queryId = V4L2_CID_MPEG_VIDEO_HEVC_PROFILE;
         break;
+    case VideoCodec::AV1:
+        queryId = V4L2_CID_MPEG_VIDEO_AV1_PROFILE;
+        break;
     default:
         return C2Config::PROFILE_UNUSED;
     }
@@ -2223,6 +2325,9 @@ C2Config::level_t V4L2Device::getDefaultLevel(VideoCodec codec) {
         break;
     case VideoCodec::HEVC:
         queryId = V4L2_CID_MPEG_VIDEO_HEVC_LEVEL;
+        break;
+    case VideoCodec::AV1:
+        queryId = V4L2_CID_MPEG_VIDEO_AV1_LEVEL;
         break;
     default:
         return C2Config::LEVEL_UNUSED;
