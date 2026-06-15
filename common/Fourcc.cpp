@@ -38,6 +38,7 @@ std::optional<Fourcc> Fourcc::fromUint32(uint32_t fourcc) {
     case YM16:
     case MT21:
     case MM21:
+    case P010:
         return Fourcc(static_cast<Value>(fourcc));
     }
     ALOGV("Unmapped fourcc: %s", fourccToString(fourcc).c_str());
@@ -71,6 +72,8 @@ std::optional<Fourcc> Fourcc::fromVideoPixelFormat(VideoPixelFormat pixelFormat,
             return Fourcc(NV12);
         case VideoPixelFormat::NV21:
             return Fourcc(NV21);
+        case VideoPixelFormat::P010:
+            return Fourcc(P010);
         case VideoPixelFormat::I422:
         case VideoPixelFormat::I420A:
         case VideoPixelFormat::I444:
@@ -128,6 +131,7 @@ std::optional<Fourcc> Fourcc::fromVideoPixelFormat(VideoPixelFormat pixelFormat,
         case VideoPixelFormat::XB30:
         case VideoPixelFormat::BGRA:
         case VideoPixelFormat::RGBA:
+        case VideoPixelFormat::P010:
         case VideoPixelFormat::UNKNOWN:
             break;
         }
@@ -180,6 +184,8 @@ VideoPixelFormat Fourcc::toVideoPixelFormat() const {
     // be mapped to PIXEL_FORMAT_NV12.
     case MM21:
         return VideoPixelFormat::NV12;
+    case P010:
+        return VideoPixelFormat::P010;
     }
 
     ALOGE("Unmapped Fourcc: %s", toString().c_str());
@@ -212,6 +218,7 @@ std::optional<Fourcc> Fourcc::toSinglePlanar() const {
     case YUYV:
     case NV12:
     case NV21:
+    case P010:
         return Fourcc(mValue);
     case YM12:
         return Fourcc(YU12);
@@ -245,6 +252,7 @@ bool Fourcc::isMultiPlanar() const {
     case YUYV:
     case NV12:
     case NV21:
+    case P010:
         return false;
     case YM12:
     case YM21:
@@ -278,6 +286,7 @@ static_assert(Fourcc::NM12 == V4L2_PIX_FMT_NV12M, "Mismatch Fourcc");
 static_assert(Fourcc::NM21 == V4L2_PIX_FMT_NV21M, "Mismatch Fourcc");
 static_assert(Fourcc::YM16 == V4L2_PIX_FMT_YUV422M, "Mismatch Fourcc");
 static_assert(Fourcc::MT21 == V4L2_PIX_FMT_MT21C, "Mismatch Fourcc");
+static_assert(Fourcc::P010 == V4L2_PIX_FMT_P010, "Mismatch Fourcc");
 #ifdef V4L2_PIX_FMT_MM21
 // V4L2_PIX_FMT_MM21 is not yet upstreamed.
 static_assert(Fourcc::MM21 == V4L2_PIX_FMT_MM21, "Mismatch Fourcc");

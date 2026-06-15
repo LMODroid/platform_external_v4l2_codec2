@@ -146,6 +146,8 @@ c2_status_t FormatConverter::allocateBuffers(uint32_t count) {
     if (mOutFormat == VideoPixelFormat::I420) {
         // Android HAL format doesn't have I420, we use YV12 instead and swap U/V while converting.
         halFormat = HalPixelFormat::YV12;
+    } else if (mOutFormat == VideoPixelFormat::P010) {
+        halFormat = HalPixelFormat::YCBCR_P010;
     } else {
         halFormat = HalPixelFormat::YCBCR_420_888;  // Will allocate NV12 in minigbm.
     }

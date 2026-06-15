@@ -760,9 +760,13 @@ bool V4L2Decoder::changeResolution() {
     // Release the previous VideoFramePool before getting a new one to guarantee only one pool
     // exists at the same time.
     mVideoFramePool.reset();
-    // Always use flexible pixel 420 format YCBCR_420_888 in Android.
-    mVideoFramePool = mGetPoolCb.Run(mCodedSize, HalPixelFormat::YCBCR_420_888,
-                                     mOutputQueue->allocatedBuffersCount());
+    // Use flexible pixel 420 format YCBCR_420_888 for 8-bit and P010 for 10-bit.
+    const std::optional<struct v4l2_format> format = getFormatInfo();
+    HalPixelFormat outputFormat = format->fmt.pix_mp.pixelformat == V4L2_PIX_FMT_P010
+                                          ? HalPixelFormat::YCBCR_P010
+                                          : HalPixelFormat::YCBCR_420_888;
+    mVideoFramePool =
+            mGetPoolCb.Run(mCodedSize, outputFormat, mOutputQueue->allocatedBuffersCount());
     if (!mVideoFramePool) {
         ALOGE("Failed to get block pool with size: %s", toString(mCodedSize).c_str());
         return false;
