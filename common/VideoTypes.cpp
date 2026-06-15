@@ -93,6 +93,8 @@ const char* HalPixelFormatToString(HalPixelFormat format) {
         return "Unknown";
     case HalPixelFormat::YCBCR_420_888:
         return "YCBCR_420_888";
+    case HalPixelFormat::YCBCR_P010:
+        return "YCBCR_P010";
     case HalPixelFormat::YV12:
         return "YV12";
     case HalPixelFormat::NV12:

@@ -33,6 +33,7 @@ namespace android {
 constexpr std::initializer_list<uint32_t> kSupportedOutputFourccs = {
         Fourcc::YU12, Fourcc::YV12, Fourcc::YM12, Fourcc::YM21,
         Fourcc::NV12, Fourcc::NV21, Fourcc::NM12, Fourcc::NM21,
+        Fourcc::P010,
 };
 
 class V4L2Decoder : public VideoDecoder {
