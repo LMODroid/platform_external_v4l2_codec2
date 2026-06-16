@@ -1653,7 +1653,7 @@ std::vector<C2Config::level_t> V4L2Device::queryC2Levels(uint32_t pixFmt) {
         break;
     case V4L2_PIX_FMT_HEVC:
     case V4L2_PIX_FMT_HEVC_SLICE:
-        if (!getSupportedLevels(VideoCodec::VP9, &levels)) {
+        if (!getSupportedLevels(VideoCodec::HEVC, &levels)) {
             ALOGW("Driver doesn't support QUERY HEVC levels, use default values");
             levels = {C2Config::LEVEL_HEVC_MAIN_1,   C2Config::LEVEL_HEVC_MAIN_2,
                       C2Config::LEVEL_HEVC_MAIN_2_1, C2Config::LEVEL_HEVC_MAIN_3,
