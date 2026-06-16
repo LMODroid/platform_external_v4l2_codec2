@@ -2371,7 +2371,7 @@ SupportedCapabilities V4L2Device::queryDecodingCapabilities(VideoCodec codec) {
     caps.defaultLevel = V4L2Device::getDefaultLevel(codec);
     caps.supportedProfiles = V4L2Device::getSupportedProfiles(
             V4L2Device::Type::kDecoder, {V4L2Device::videoCodecToPixFmt(codec)});
-    caps.defaultLevel = V4L2Device::getDefaultLevel(codec);
+    caps.defaultProfile = V4L2Device::getDefaultProfile(codec);
 
     return caps;
 }
