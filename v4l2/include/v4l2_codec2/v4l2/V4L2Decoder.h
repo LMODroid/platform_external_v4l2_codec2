@@ -88,7 +88,7 @@ private:
     void serviceDeviceTask(bool event);
     bool dequeueResolutionChangeEvent();
     bool changeResolution();
-    bool setupOutputFormat(const ui::Size& size);
+    bool setupOutputFormat(const ui::Size& size, const uint32_t requestedpixfmt);
 
     void tryFetchVideoFrame();
     void onVideoFrameReady(std::optional<VideoFramePool::FrameWithBlockId> frameWithBlockId);

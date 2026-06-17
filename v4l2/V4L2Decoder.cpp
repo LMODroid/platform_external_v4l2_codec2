@@ -307,7 +307,7 @@ bool V4L2Decoder::startOutputQueue(size_t minOutputBuffersCount, enum v4l2_memor
     }
 
     const ui::Size codedSize(format->fmt.pix_mp.width, format->fmt.pix_mp.height);
-    if (!setupOutputFormat(codedSize)) {
+    if (!setupOutputFormat(codedSize, format->fmt.pix_mp.pixelformat)) {
         return false;
     }
 
@@ -776,7 +776,18 @@ bool V4L2Decoder::changeResolution() {
     return true;
 }
 
-bool V4L2Decoder::setupOutputFormat(const ui::Size& size) {
+bool V4L2Decoder::setupOutputFormat(const ui::Size& size, const uint32_t requestedpixfmt) {
+    if (requestedpixfmt != 0) {
+        if (std::find(kSupportedOutputFourccs.begin(), kSupportedOutputFourccs.end(),
+                      requestedpixfmt) != kSupportedOutputFourccs.end()) {
+            if (mOutputQueue->setFormat(requestedpixfmt, size, 0) != std::nullopt) {
+                return true;
+            }
+        }
+        ALOGD("Decoder requested pixel format %s is not supported, skipping...",
+              fourccToString(requestedpixfmt).c_str());
+    }
+
     for (const uint32_t& pixfmt :
          mDevice->enumerateSupportedPixelformats(V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)) {
         if (std::find(kSupportedOutputFourccs.begin(), kSupportedOutputFourccs.end(), pixfmt) ==
